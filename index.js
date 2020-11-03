@@ -30,3 +30,21 @@ On the door is a handwritten sign. >_`;
   }
   process.exit();
 }
+
+class Room {
+  constructor() {
+    console.log("Making the room");
+  }
+
+  item(sevenDays) {
+    if (Room === foyer) {
+      console.log("A copy of Seven Days lies in a corner.");
+      return this.item;
+  }
+}
+  inventory(item) {
+    console.log("You are carrying " + item());
+  }
+
+
+//let room = new Room();
