@@ -1,3 +1,4 @@
+const { read } = require("fs");
 const readline = require("readline");
 const readlineInterface = readline.createInterface(
   process.stdin,
@@ -10,28 +11,67 @@ function ask(questionText) {
   });
 }
 
-start();
+class Kitchen {
+  constructor() {
+    this.welcomeMessage = `Welcome to the Kitchen`;
+    this.nextRoom = null;
+  }
+}
 
-async function start() {
-  const welcomeMessage = `182 Main St.
+class Foyer {
+  constructor() {
+    this.welcomeMessage = `Welcome to the Foyer`;
+    this.nextRoom = new Kitchen();
+  }
+}
+
+class MainStreet {
+  constructor() {
+    this.welcomeMessage = `182 Main St.
 You are standing on Main Street between Church and South Winooski.
 There is a door here. A keypad sits on the handle.
 On the door is a handwritten sign. >_`;
-  let answer = await ask(welcomeMessage);
-  while (answer !== "exit") {
-    answer = await ask(">_ ");
+    this.sign = `The sign says "Welcome to Burlington Code Academy!
+     Come on up to the third floor. 
+     If the door is locked, use the code 12345."`;
+    this.inventory = [new item("sign", this.sign), new item("key", 12345)];
+    this.nextRoom = new Foyer();
   }
-  if (answer !== "read sign") {
-    console.log("Sorry, I don't know how to " + answer);
-  } else {
-    console.log(
-      "The sign says Welcome to Burlington Code Academy!\n Come on up to the third floor.\n If the door is locked, use the code 12345."
-    );
+
+  read(thingToRead) {
+    console.log("\n");
+    return this[thingToRead];
+  }
+
+  take() {
+    console.log("\n");
+    return `That would be selfish. How will other students find their way?`;
+  }
+}
+
+start();
+
+async function start() {
+  console.log("\n");
+  let room = new MainStreet();
+  let answer = await ask(room.welcomeMessage);
+  // answer === "read sign" => ['read', 'sign'];
+  while (answer !== "exit") {
+    //console.log(`Sorry, I don't know how to ${answer}.`);
+    let commands = answer.split(" ");
+    let action = commands[0];
+    let object = commands[1];
+    if (room[action] !== undefined) {
+      console.log(room[action](object));
+    } else {
+      console.log(`Sorry I don't know how to ${action}`);
+    }
+    answer = await ask(`${room.welcomeMessage}`);
   }
   process.exit();
 }
 
-class Room {
+/*class Room {
   constructor() {
     console.log("Making the room");
   }
@@ -47,4 +87,4 @@ class Room {
   }
 
 
-//let room = new Room();
+//let room = new Room();*/
