@@ -11,6 +11,27 @@ function ask(questionText) {
   });
 }
 
+/*
+States
+0: is out-of-play (not yet introduced)
+1: is somewhere in the game world, but not yet found by the player
+2: has been handled by the player — e.g. taken and then dropped
+3: is carried by the player.
+*/
+
+class Item {
+  constructor(name, state) {
+    this.name = name;
+    this.state = state;
+  }
+}
+
+class Inventory extends Item {
+  constructor(nme, stt) {
+    super(nme, stt);
+  }
+}
+
 class Kitchen {
   constructor() {
     this.welcomeMessage = `Welcome to the Kitchen`;
@@ -26,8 +47,14 @@ But let's forget all that fancy flatlander vocabulary,
 and just call it a foyer. In Vermont, this is pronounced
 "FO-ee-yurr".
 A copy of Seven Days lies in a corner.`;
-    this.inventory = [new item('sevenDays', this.SevenDays)];
+    //this.inventory = [new item('sevenDays', this.SevenDays)];
     this.nextRoom = new Kitchen();
+  }
+
+  take() {
+    console.log('\n');
+    return `You pick up the paper and leaf through it looking for comics 
+    and ignoring the articles, just like everybody else does.`;
   }
 }
 
@@ -40,16 +67,11 @@ On the door is a handwritten sign. >_`;
     this.sign = `The sign says "Welcome to Burlington Code Academy!
      Come on up to the third floor. 
      If the door is locked, use the code 12345."`;
-    this.inventory = [new item('sign', this.sign), new item('key', 12345)];
+    //this.inventory = [new item('sign', this.sign), new item('key', 12345)];
     this.nextRoom = new Foyer();
   }
 
-  openDoor(locked) {
-    console.log('\n');
-    return `The door is locked. There is a keypad on the door handle.`;
-  }
-
-  openDoor(open) {
+  open() {
     console.log('\n');
     return `Success! The door opens. 
     You enter the foyer and the door shuts behind you.`;
@@ -70,6 +92,14 @@ start();
 
 async function start() {
   console.log('\n');
+  let inventory = [];
+  for (let i of worldStuff) {
+    if (i.state === 3) {
+      inventory.push(i.name);
+    }
+  }
+  let worldStuff = [(paper = new Inventory('Seven Days', 1))];
+  console.log(inventory);
   let room = new MainStreet();
   let answer = await ask(room.welcomeMessage);
   // answer === "read sign" => ['read', 'sign'];
